@@ -15,9 +15,9 @@ ContainerWidget* ContainerWidget::setOrientation(Orientation inOrientation)
     return this;
 }
 
-ContainerWidget* ContainerWidget::setJustifyContent(JustifyContent inJustifyContent)
+ContainerWidget* ContainerWidget::setJustifyAxis(JustifyMainAxis inJustifyMainAxis)
 {
-    justifyContent = inJustifyContent;
+    justifyMainAxis = inJustifyMainAxis;
     return this;
 }
 
@@ -31,28 +31,28 @@ void ContainerWidget::laidOut(Rect inRect)
     for(auto& childIt : children)
         summedSize += childIt->getSize();
 
-    if(justifyContent == JustifyContent::Start)
+    if(justifyMainAxis == JustifyMainAxis::Start)
     {
         if(orientation == Orientation::Vertical)
             ;
         else
             ;
     }
-    else if(justifyContent == JustifyContent::End)
+    else if(justifyMainAxis == JustifyMainAxis::End)
     {
         if(orientation == Orientation::Vertical)
             current.x = inRect.w - summedSize.x;
         else
             current.y = inRect.h - summedSize.y;
     }
-    else if(justifyContent == JustifyContent::Center)
+    else if(justifyMainAxis == JustifyMainAxis::Center)
     {
         if(orientation == Orientation::Vertical)
             current.x = (inRect.w - summedSize.x) / 2;
         else
             current.y = (inRect.h - summedSize.y) / 2;
     }
-    else if(justifyContent == JustifyContent::SpaceBetween)
+    else if(justifyMainAxis == JustifyMainAxis::SpaceBetween)
     {
         if(orientation == Orientation::Vertical)
             current.x = (inRect.w - summedSize.x) / 2;

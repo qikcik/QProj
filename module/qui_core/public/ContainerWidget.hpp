@@ -8,7 +8,7 @@ namespace qui
         Vertical, Horizontal
     };
 
-    enum class JustifyContent {
+    enum class JustifyMainAxis {
         Start, End, Center, SpaceBetween
     };
 
@@ -17,7 +17,7 @@ namespace qui
     public:
         ContainerWidget* appendChild(std::shared_ptr<Widget>);
         ContainerWidget* setOrientation(Orientation);
-        ContainerWidget* setJustifyContent(JustifyContent);
+        ContainerWidget* setJustifyAxis(JustifyMainAxis);
 
         void laidOut(qui::Rect) override;
         void draw(sf::RenderTarget&) override;
@@ -25,7 +25,7 @@ namespace qui
 
     protected:
         Orientation orientation {Orientation::Vertical};
-        JustifyContent justifyContent {JustifyContent::Start};
+        JustifyMainAxis justifyMainAxis {JustifyMainAxis::Start};
 
         std::vector<std::shared_ptr<Widget>> children;
     };

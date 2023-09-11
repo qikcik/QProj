@@ -11,7 +11,7 @@ int main()
     font.loadFromFile("asset/consolas.ttf");
 
     auto widget = std::make_shared<ContainerWidget>();
-    widget->setOrientation(Orientation::Vertical)->setJustifyContent(JustifyContent::Center);
+    widget->setOrientation(Orientation::Vertical)->setJustifyAxis(JustifyMainAxis::SpaceBetween);
 
     auto text0 = std::make_shared<TextWidget>();
     text0->setFont(font)
