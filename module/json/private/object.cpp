@@ -18,7 +18,7 @@ std::string stringifyArr( const innerType val)
                     [&](const String& str){
                         result = "\""+str+"\",";
                     },
-                    [&](const Number& num){
+                    [&](const Float& num){
                         result = std::to_string(num)+",";
                     }
                 },val.value);
@@ -57,7 +57,7 @@ std::string Object::stringify() const
                         [&](const String& str){
                             result = "\""+str+"\",";
                         },
-                        [&](const Number& num){
+                        [&](const Float& num){
                             result = std::to_string(num)+",";
                         }
                 },val.value);
@@ -77,7 +77,7 @@ std::string Object::stringify() const
                                     [&](const String& str){
                                         result = "\""+str+"\",";
                                     },
-                                    [&](const Number& num){
+                                    [&](const Float& num){
                                         result = std::to_string(num)+",";
                                     }
                             },val.value);

@@ -11,7 +11,7 @@
 namespace json
 {
     using String = std::string;
-    using Number = float;
+    using Float = float;
 
     struct Object;
     struct Array;
@@ -21,7 +21,7 @@ namespace json
 
     struct Value
     {
-        using innerType = std::variant<String,Number>;
+        using innerType = std::variant<String,Float>;
         innerType value;
 
         template<typename T>
