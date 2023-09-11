@@ -31,6 +31,9 @@ Array parseArray(TokenIterator& it)
                 [&](const Token::String& value) {
                     result.values.emplace_back(Value{value.value});
                 },
+                [&](const Token::Float& value) {
+                    result.values.emplace_back(Value{value.value});
+                },
                 [&](const Token::End& end) {
                     throw std::runtime_error("unexpected end of file, expected value for entry");
                 },
@@ -79,6 +82,9 @@ Object parseObject(TokenIterator& it)
                     throw std::runtime_error("unexpected keyword, expected '[' or '{'");
                 },
                 [&](const Token::String& value)   {
+                    result.entries[entryKey] = Value{value.value};
+                },
+                [&](const Token::Float& value)   {
                     result.entries[entryKey] = Value{value.value};
                 },
                 [&](const Token::End& end) {

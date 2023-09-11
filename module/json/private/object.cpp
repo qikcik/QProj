@@ -12,9 +12,16 @@ std::string stringifyArr( const innerType val)
 {
     std::string result;
     std::visit(overloaded{
-            [&](const Value& str)
+            [&](const Value& val)
             {
-                result = "\""+str.value+"\",";
+                std::visit(overloaded{
+                    [&](const String& str){
+                        result = "\""+str+"\",";
+                    },
+                    [&](const Number& num){
+                        result = std::to_string(num)+",";
+                    }
+                },val.value);
             },
             [&](const Object& obj)
             {
@@ -44,9 +51,16 @@ std::string Object::stringify() const
         result += "\""+entryIt.first+"\":";
 
         std::visit(overloaded {
-            [&](const Value& str)
+            [&](const Value& val)
             {
-                result += "\""+str.value+"\",";
+                std::visit(overloaded{
+                        [&](const String& str){
+                            result = "\""+str+"\",";
+                        },
+                        [&](const Number& num){
+                            result = std::to_string(num)+",";
+                        }
+                },val.value);
             },
             [&](const Object& obj)
             {
@@ -57,9 +71,16 @@ std::string Object::stringify() const
                 result += "[";
                 for(const auto& strIt : arr.values)
                     std::visit(overloaded{
-                        [&](const Value& str)
+                        [&](const Value& val)
                         {
-                            result += "\""+str.value+"\",";
+                            std::visit(overloaded{
+                                    [&](const String& str){
+                                        result = "\""+str+"\",";
+                                    },
+                                    [&](const Number& num){
+                                        result = std::to_string(num)+",";
+                                    }
+                            },val.value);
                         },
                         [&](const Object& obj)
                         {

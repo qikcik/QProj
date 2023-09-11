@@ -25,7 +25,7 @@ namespace Token
         float value;
     };
 
-    using type = std::variant<End,Keyword,String>;
+    using type = std::variant<End,Keyword,String,Float>;
 }
 
 

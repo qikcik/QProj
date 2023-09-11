@@ -70,7 +70,7 @@ Token::type TokenIterator::tokenizeNumber()
             break;
         }
     }
-    return Token::String(summed);
+    return Token::Float(std::stof(summed));
 }
 
 Token::type TokenIterator::tokenizeString()

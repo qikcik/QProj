@@ -23,13 +23,13 @@ TEST(EntryTest, EntryTest)
         },
     } };
 
-    EXPECT_EQ(e.get<Value>("a").value, "b");
-    EXPECT_EQ(e.get<Value>("b").value, "32");
-    EXPECT_EQ(e.get<Object>("c").get<Value>("a").value, "b");
-    EXPECT_EQ(e.get<Object>("c").get<Value>("d").value, "32");
-    EXPECT_EQ(e.get<Object>("c").get<Array>("v").get<Object>(0).get<Value>("i").value, "0");
-    EXPECT_EQ(e.get<Object>("c").get<Array>("v").get<Object>(1).get<Value>("i").value, "1");
-    EXPECT_EQ(e.get<Object>("c").get<Array>("v2").get<Value>(1).value, "test1");
+    EXPECT_EQ(e.get<Value>("a").get<String>(), "b");
+    EXPECT_EQ(e.get<Value>("b").get<String>(), "32");
+    EXPECT_EQ(e.get<Object>("c").get<Value>("a").get<String>(), "b");
+    EXPECT_EQ(e.get<Object>("c").get<Value>("d").get<String>(), "32");
+    EXPECT_EQ(e.get<Object>("c").get<Array>("v").get<Object>(0).get<Value>("i").get<String>(), "0");
+    EXPECT_EQ(e.get<Object>("c").get<Array>("v").get<Object>(1).get<Value>("i").get<String>(), "1");
+    EXPECT_EQ(e.get<Object>("c").get<Array>("v2").get<Value>(1).get<String>(), "test1");
 
     //std::cout << e.stringify() << std::endl;
 }
