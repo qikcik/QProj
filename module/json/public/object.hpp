@@ -29,7 +29,7 @@ namespace json
         innerType value {};
 
         template<typename T>
-        T get() {return std::get<T>(value);};
+        T get() const {return std::get<T>(value);};
     };
 
     struct Array

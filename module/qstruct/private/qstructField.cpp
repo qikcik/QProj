@@ -1,4 +1,5 @@
 #include "qstructField.hpp"
+#include "qstructType.hpp"
 
-template<> FieldType getType<float>() { return FieldType::Float; }
-template<> FieldType getType<std::string>() { return FieldType::StdString; }
+template<> FieldType::type getType<float>() { return FieldType::Float{}; }
+template<> FieldType::type getType<std::string>() { return FieldType::StdString{}; }

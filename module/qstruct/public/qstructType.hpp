@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include "qstructField.hpp"
 
 class FieldInfo;
 
@@ -26,3 +27,8 @@ concept QStruct = requires (T t)
 {
     { T::staticType } -> std::convertible_to<const QStructType>;
 };
+
+template<QStruct T>
+FieldType::type getType() {
+    return FieldType::QStruct { &T::staticType };
+}

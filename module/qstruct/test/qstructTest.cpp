@@ -6,6 +6,8 @@
 #include "qstructType.hpp"
 #include "qstructField.hpp"
 
+
+
 struct Foo
 {
     float x;
@@ -25,13 +27,24 @@ const QStructType Foo::staticType{"Foo",{
     GEN_QSTRUCT_FIELD_ENTRY(Foo,text)
 }};
 
+struct Bar
+{
+    Foo inner {};
+
+    static const QStructType staticType;
+};
+
+//TODO: make generate by Header Tool
+const QStructType Bar::staticType{"Bar",{
+    GEN_QSTRUCT_FIELD_ENTRY(Bar,inner)
+}};
+
 TEST(QStructTest, TypeInfoCheck)
 {
-    EXPECT_EQ(Foo::staticType.getField("x").type,FieldType::Float);
-    EXPECT_EQ(Foo::staticType.getField("y").type,FieldType::Float);
-    EXPECT_EQ(Foo::staticType.getField("z").type,FieldType::Float);
-
-    EXPECT_EQ(Foo::staticType.getField("text").type,FieldType::StdString);
+    EXPECT_TRUE(std::holds_alternative<FieldType::Float>(Foo::staticType.getField("x").type));
+    EXPECT_TRUE(std::holds_alternative<FieldType::Float>(Foo::staticType.getField("y").type));
+    EXPECT_TRUE(std::holds_alternative<FieldType::Float>(Foo::staticType.getField("z").type));
+    EXPECT_TRUE(std::holds_alternative<FieldType::StdString>(Foo::staticType.getField("text").type));
 }
 
 TEST(QStructTest, GetFieldAndSetField)
