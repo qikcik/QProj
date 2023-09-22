@@ -11,6 +11,7 @@ enum class FieldType
 template<typename T>
 FieldType getType();
 
+
 struct FieldInfo
 {
 public:

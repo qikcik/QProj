@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/module.cmake")
 
-add_subdirectory("module/qstruct")
 add_subdirectory("module/json")
-add_subdirectory("module/qui_core")
+add_subdirectory("module/qstruct")
+add_subdirectory("module/qstruct_serialization")
+#add_subdirectory("module/qui_core")

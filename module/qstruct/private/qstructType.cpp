@@ -18,3 +18,8 @@ const FieldInfo& QStructType::getField(const std::string& fieldName) const
     }
     return {};
 }
+
+const std::vector<FieldInfo>& QStructType::getFields() const
+{
+    return fields;
+}

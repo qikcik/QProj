@@ -7,7 +7,7 @@ macro(defineModule MODULE)
         CONFIGURE_DEPENDS true
         "${CMAKE_CURRENT_LIST_DIR}/private/*.cpp"
     )
-    list(FILTER sources EXCLUDE REGEX "^.*Test\.cpp$")
+    #list(FILTER sources EXCLUDE REGEX "^.*Test\.cpp$")
 
     add_library(
         ${CMAKE_PROJECT_NAME}_${MODULE} STATIC
@@ -37,7 +37,7 @@ macro(defineModule MODULE)
         GLOB_RECURSE sources
         LIST_DIRECTORIES true
         CONFIGURE_DEPENDS true
-        "${CMAKE_CURRENT_LIST_DIR}/private/*Test.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/test/*.cpp"
     )
 
 

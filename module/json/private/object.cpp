@@ -10,26 +10,26 @@ overloaded(Ts...) -> overloaded<Ts...>;
 
 std::string stringifyArr( const innerType val)
 {
-    std::string result;
+    std::string result {};
     std::visit(overloaded{
             [&](const Value& val)
             {
                 std::visit(overloaded{
                     [&](const String& str){
-                        result = "\""+str+"\",";
+                        result += "\""+str+"\",";
                     },
                     [&](const Float& num){
-                        result = std::to_string(num)+",";
+                        result += std::to_string(num)+",";
                     }
                 },val.value);
             },
             [&](const Object& obj)
             {
-                result = obj.stringify()+",";
+                result += obj.stringify()+",";
             },
             [&](const Array& arr)
             {
-                result = "[";
+                result += "[";
 
                 for(const auto& it : arr.values)
                     result += stringifyArr(it);
@@ -55,10 +55,10 @@ std::string Object::stringify() const
             {
                 std::visit(overloaded{
                         [&](const String& str){
-                            result = "\""+str+"\",";
+                            result += "\""+str+"\",";
                         },
                         [&](const Float& num){
-                            result = std::to_string(num)+",";
+                            result += std::to_string(num)+",";
                         }
                 },val.value);
             },
@@ -75,10 +75,10 @@ std::string Object::stringify() const
                         {
                             std::visit(overloaded{
                                     [&](const String& str){
-                                        result = "\""+str+"\",";
+                                        result += "\""+str+"\",";
                                     },
                                     [&](const Float& num){
-                                        result = std::to_string(num)+",";
+                                        result += std::to_string(num)+",";
                                     }
                             },val.value);
                         },
@@ -104,4 +104,9 @@ std::string Object::stringify() const
 
     result[result.size()-1] = '}';
     return result;
+}
+
+void Object::set(const std::string& key, const innerType& value)
+{
+    entries[key] = value;
 }

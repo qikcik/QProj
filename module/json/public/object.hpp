@@ -21,8 +21,12 @@ namespace json
 
     struct Value
     {
+        Value() = default;
+
+        explicit Value(const std::string& val) : value(val) {};
+        explicit Value(float val) : value(val) {};
         using innerType = std::variant<String,Float>;
-        innerType value;
+        innerType value {};
 
         template<typename T>
         T get() {return std::get<T>(value);};
@@ -41,6 +45,8 @@ namespace json
     {
         template<typename T>
         T get(const std::string& key);
+
+        void set(const std::string& key,const innerType& value);
 
         std::unordered_map<String,innerType> entries;
 

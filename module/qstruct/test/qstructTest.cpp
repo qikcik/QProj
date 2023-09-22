@@ -3,8 +3,8 @@
 #include <cstddef>
 #include <algorithm>
 
-#include <qstructType.hpp>
-#include <qstructField.hpp>
+#include "qstructType.hpp"
+#include "qstructField.hpp"
 
 struct Foo
 {
