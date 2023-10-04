@@ -19,7 +19,7 @@ protected:
     std::vector<FieldInfo> fields;
 };
 
-#define GEN_QSTRUCT_FIELD_ENTRY(type,name) {#name, offsetof(type, name), getType<typeof(type::name)>()},
+#define GEN_QSTRUCT_FIELD_ENTRY(type,name) FieldInfo{#name, offsetof(type, name), getType<typeof(type::name)>()}
 
 
 template<typename T>
@@ -31,4 +31,24 @@ concept QStruct = requires (T t)
 template<QStruct T>
 FieldType::type getType() {
     return FieldType::QStruct { &T::staticType };
+}
+
+#include "fixedArray.hpp"
+
+template<typename T>
+concept FixedArray = requires(T a) {
+    requires std::same_as<T, qstd::FixedArray<typename T::element_type,T::max_length>>;
+};
+
+//TODO: implement
+
+template<FixedArray T>
+FieldType::type getType() {
+    using value_type = typename T::element_type;
+    return FieldType::FixedArray{
+        T::max_length,
+        std::make_unique<FieldType::type>(
+            getType<value_type>()
+        )
+    };
 }

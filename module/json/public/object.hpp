@@ -37,14 +37,13 @@ namespace json
         std::vector<innerType> values;
 
         template<typename T>
-        T get(size_t idx);
-
+        T& get(size_t idx);
     };
 
     struct Object
     {
         template<typename T>
-        T get(const std::string& key);
+        T& get(const std::string& key);
 
         void set(const std::string& key,const innerType& value);
 
@@ -54,8 +53,8 @@ namespace json
     };
 
     template<typename T>
-    T Array::get(size_t idx) {return std::get<T>(values[idx]);};
+    T& Array::get(size_t idx) {return std::get<T>(values[idx]);};
 
     template<typename T>
-    T Object::get(const std::string& key) {return std::get<T>(entries[key]);};
+    T& Object::get(const std::string& key) {return std::get<T>(entries[key]);};
 }

@@ -3,7 +3,7 @@
 #include <algorithm>
 
 QStructType::QStructType(std::string&& inName, std::vector<FieldInfo>&& inFields)
-:   name(inName), fields(inFields)
+:   name(inName), fields(std::move(inFields))
 {
 
 }

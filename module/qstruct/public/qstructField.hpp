@@ -9,15 +9,31 @@ class QStructType;
 
 namespace FieldType
 {
-    struct Unimplemented {};
-    struct Float {};
-    struct StdString {};
+    struct Unimplemented;
+    struct Float;
+    struct StdString;
+    struct QStruct;
+    struct FixedArray;
 
+    using type = std::variant<Unimplemented,Float,StdString,QStruct,FixedArray>;
+
+    struct Unimplemented {
+        static const size_t sizeOf = 0;
+    };
+    struct Float {
+        static const size_t sizeOf = sizeof(float);
+    };
+    struct StdString {
+        static const size_t sizeOf = sizeof(std::string);
+    };
     struct QStruct {
         const QStructType* type;
     };
+    struct FixedArray {
+        size_t max_length {0};
+        std::shared_ptr<FieldType::type> innerType; //TODO: fix copy behaviour and change to unique_ptr
+    };
 
-    using type = std::variant<Unimplemented,Float,StdString,QStruct>;
 }
 
 template<typename T>

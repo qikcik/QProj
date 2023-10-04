@@ -6,8 +6,6 @@
 #include "qstructType.hpp"
 #include "qstructField.hpp"
 
-
-
 struct Foo
 {
     float x;
@@ -21,15 +19,17 @@ struct Foo
 
 //TODO: make generate by Header Tool
 const QStructType Foo::staticType{"Foo",{
-    GEN_QSTRUCT_FIELD_ENTRY(Foo,x)
-    GEN_QSTRUCT_FIELD_ENTRY(Foo,y)
-    GEN_QSTRUCT_FIELD_ENTRY(Foo,z)
+    GEN_QSTRUCT_FIELD_ENTRY(Foo,x),
+    GEN_QSTRUCT_FIELD_ENTRY(Foo,y),
+    GEN_QSTRUCT_FIELD_ENTRY(Foo,z),
     GEN_QSTRUCT_FIELD_ENTRY(Foo,text)
 }};
 
 struct Bar
 {
     Foo inner {};
+    std::vector<Foo> arr;
+
 
     static const QStructType staticType;
 };
@@ -37,6 +37,7 @@ struct Bar
 //TODO: make generate by Header Tool
 const QStructType Bar::staticType{"Bar",{
     GEN_QSTRUCT_FIELD_ENTRY(Bar,inner)
+    //(Bar,arr)
 }};
 
 TEST(QStructTest, TypeInfoCheck)
@@ -50,6 +51,8 @@ TEST(QStructTest, TypeInfoCheck)
 TEST(QStructTest, GetFieldAndSetField)
 {
     Foo obj = {2,3,4,"test"};
+
+    EXPECT_EQ(Foo::staticType.getField("x").getValueRef<float>(&obj),2);
 
     EXPECT_EQ(Foo::staticType.getField("x").getValueRef<float>(&obj),2);
     EXPECT_EQ(Foo::staticType.getField("y").getValueRef<float>(&obj),3);
