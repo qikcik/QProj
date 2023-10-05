@@ -10,7 +10,6 @@ namespace qstd
         using element_type = TType;
 
         explicit DynamicArray(size_t in_capacity = 8);
-
         ~DynamicArray();
         DynamicArray(const DynamicArray& other);
         DynamicArray(DynamicArray&& other) noexcept;
@@ -19,8 +18,8 @@ namespace qstd
 
         inline size_t get_length() const;
         inline size_t get_capacity() const;
+        void reserve(size_t in_capacity) noexcept;
 
-        void reserve(size_t in_capacity,size_t elementSize = sizeof(TType)) noexcept;
         void push_back(element_type&& in_element) noexcept;
 
         element_type& operator[](size_t in_position);
@@ -28,10 +27,12 @@ namespace qstd
 
         class Iterator;
 
-        Iterator begin() { return Iterator(*array); }
-        Iterator end()   { return Iterator(*array+length); }
+        Iterator begin() const { return Iterator(array); }
+        Iterator end()   const { return Iterator(array+length); }
 
     protected:
+        void reserve_impl(size_t in_capacity,size_t in_elementSize = sizeof(TType)) noexcept;
+
         size_t length = 0;
         size_t capacity = 0;
         element_type* array = {};
@@ -60,5 +61,3 @@ namespace qstd
         pointer ptr;
     };
 }
-
-#include "fixedArray.tpp"

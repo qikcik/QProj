@@ -5,7 +5,7 @@ namespace qstd
 {
     template<typename TType>
     DynamicArray<TType>::DynamicArray(size_t in_capacity)
-    : capacity(0), length(0)
+    : capacity(in_capacity), length(0)
     {
         reserve(capacity);
     }
@@ -14,7 +14,8 @@ namespace qstd
     DynamicArray<TType>::~DynamicArray()
     {
         if(array != nullptr)
-            delete array[];
+
+            delete[] reinterpret_cast<uint8_t*>(array);
     }
 
 
@@ -82,14 +83,14 @@ namespace qstd
     const DynamicArray<TType>::element_type&
     DynamicArray<TType>::operator[](size_t in_position) const
     {
-        return array+in_position;
+        return array[in_position];
     }
 
     template<typename TType>
     DynamicArray<TType>::element_type&
     DynamicArray<TType>::operator[](size_t in_position)
     {
-        return array+in_position;
+        return array[in_position];
     }
 
     template<typename TType>
@@ -98,19 +99,31 @@ namespace qstd
         if (length == capacity)
             reserve(capacity * 2);
 
-        array[length++] = std::move(in_element);
+        if constexpr ( std::is_same_v<float, TType> )
+            array[length] = in_element;
+        else
+            TType* ptr = &array[length];
+            new (&array[length]) TType( std::move(in_element) );
+        length++;
     }
 
     template<typename TType>
-    void DynamicArray<TType>::reserve(size_t in_capacity, size_t elementSize) noexcept
+    void DynamicArray<TType>::reserve(size_t in_capacity) noexcept
     {
-        if(in_capacity <= capacity)
+        reserve_impl(in_capacity,sizeof(TType));
+    }
+
+
+    template<typename TType>
+    void DynamicArray<TType>::reserve_impl(size_t in_capacity, size_t in_elementSize) noexcept
+    {
+        if(in_capacity < capacity)
             return;
 
         element_type* old = array;
         capacity = in_capacity;
-        array = new uint8_t[capacity*elementSize];
-        copy(old, old + length, array);
+        array = reinterpret_cast<TType*>(new uint8_t[capacity * in_elementSize]);
+        std::copy(old, old + length, array); // foreach with move constructor, would be a better option
         delete[] old;
     }
 }

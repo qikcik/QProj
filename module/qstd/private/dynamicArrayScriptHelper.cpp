@@ -1,4 +1,5 @@
 #include "dynamicArrayScriptHelper.hpp"
+#include "dynamicArray.tpp"
 
 using namespace qstd;
 
@@ -20,5 +21,11 @@ void* DynamicArrayScriptHelper::get_elementPtr(size_t in)
 void DynamicArrayScriptHelper::reserve(size_t in_capacity)
 {
     auto& ptr = *reinterpret_cast<DynamicArray<uint8_t>*>(fixedArrayPtr);
-    ptr.reserve(in_capacity,value_size);
+    ptr.reserve_impl(in_capacity,value_size);
+}
+
+void DynamicArrayScriptHelper::set_length(size_t in_length)
+{
+    auto& ptr = *reinterpret_cast<DynamicArray<uint8_t>*>(fixedArrayPtr);
+    ptr.length = in_length;
 }

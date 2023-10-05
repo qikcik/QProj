@@ -2,8 +2,8 @@
 #include "qstructField.hpp"
 #include <algorithm>
 
-QStructType::QStructType(std::string&& inName, std::vector<FieldInfo>&& inFields)
-:   name(inName), fields(std::move(inFields))
+QStructType::QStructType(std::string&& inName,size_t inSize, std::vector<FieldInfo>&& inFields)
+:   name(inName),size(inSize), fields(std::move(inFields))
 {
 
 }

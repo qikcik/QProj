@@ -13,24 +13,23 @@ namespace FieldType
     struct Float;
     struct StdString;
     struct QStruct;
-    struct FixedArray;
+    struct DynamicArray;
 
-    using type = std::variant<Unimplemented,Float,StdString,QStruct,FixedArray>;
+    using type = std::variant<Unimplemented,Float,StdString,QStruct,DynamicArray>;
 
     struct Unimplemented {
-        static const size_t sizeOf = 0;
+
     };
     struct Float {
-        static const size_t sizeOf = sizeof(float);
+
     };
     struct StdString {
-        static const size_t sizeOf = sizeof(std::string);
+
     };
     struct QStruct {
         const QStructType* type;
     };
-    struct FixedArray {
-        size_t max_length {0};
+    struct DynamicArray {
         std::shared_ptr<FieldType::type> innerType; //TODO: fix copy behaviour and change to unique_ptr
     };
 
@@ -39,6 +38,7 @@ namespace FieldType
 template<typename T>
 FieldType::type getType();
 
+size_t getSizeOf(const FieldType::type& ref);
 
 struct FieldInfo
 {

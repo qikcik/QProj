@@ -5,18 +5,18 @@
 
 #include "qstructType.hpp"
 #include "qstructField.hpp"
-#include "fixedArray.hpp"
+#include "dynamicArray.tpp"
 #include "converter.hpp"
 
 struct FooArr
 {
-    qstd::FixedArray<float,32> arr {};
+    qstd::DynamicArray<float> arr {};
 
     static const QStructType staticType;
 };
 
 //TODO: make generate by Header Tool
-const QStructType FooArr::staticType{"Foo",{
+const QStructType FooArr::staticType{"Foo",sizeof(FooArr),{
         GEN_QSTRUCT_FIELD_ENTRY(FooArr,arr),
 }};
 
@@ -30,7 +30,7 @@ TEST(ConverterTest, ArrayCheck)
     obj.arr.push_back(3);
     obj.arr.push_back(6);
 
-    auto json = Converter().qstructToJson(obj);
+    auto json = Converter::qstructToJson(obj);
     auto source = json.stringify();
-    FooArr obj2 = Converter().jsonToQStruct<FooArr>(source);
+    FooArr obj2 = Converter::jsonToQStruct<FooArr>(source);
 }

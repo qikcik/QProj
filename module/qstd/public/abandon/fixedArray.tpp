@@ -7,7 +7,7 @@ namespace qstd
 
     template<typename TType, size_t TLength>
     FixedArray<TType, TLength>::FixedArray()
-    : length(0), array({})
+    : length(0), array()
     {
 
     }
@@ -21,7 +21,7 @@ namespace qstd
     template<typename TType, size_t TLength>
     FixedArray<TType, TLength>::FixedArray(const FixedArray& other)
     {
-        for(TType it : other)
+        for(auto it : other)
         {
             push_back(std::move(it));
         }

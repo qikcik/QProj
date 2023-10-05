@@ -9,7 +9,8 @@ class FieldInfo;
 class QStructType
 {
 public:
-    explicit QStructType(std::string&& inName, std::vector<FieldInfo>&& inFields);
+    explicit QStructType(std::string&& inName,size_t size, std::vector<FieldInfo>&& inFields);
+    const size_t size;
     const std::string name;
 
     const FieldInfo& getField(const std::string& fieldName) const;
@@ -33,20 +34,19 @@ FieldType::type getType() {
     return FieldType::QStruct { &T::staticType };
 }
 
-#include "fixedArray.hpp"
+#include "dynamicArray.hpp"
 
 template<typename T>
-concept FixedArray = requires(T a) {
-    requires std::same_as<T, qstd::FixedArray<typename T::element_type,T::max_length>>;
+concept TDynamicArray = requires(T a) {
+    requires std::same_as<T, qstd::DynamicArray<typename T::element_type>>;
 };
 
 //TODO: implement
 
-template<FixedArray T>
+template<TDynamicArray T>
 FieldType::type getType() {
     using value_type = typename T::element_type;
-    return FieldType::FixedArray{
-        T::max_length,
+    return FieldType::DynamicArray{
         std::make_unique<FieldType::type>(
             getType<value_type>()
         )
