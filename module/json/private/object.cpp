@@ -39,7 +39,7 @@ std::string stringifyArr( const innerType val)
             },
     },val);
 
-    return "";
+    return result;
 }
 
 std::string Object::stringify() const

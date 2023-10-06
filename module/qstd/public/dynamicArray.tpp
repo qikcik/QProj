@@ -52,7 +52,7 @@ namespace qstd
             return *this;
 
         this->~DynamicArray<TType>();
-        std::allocator<DynamicArray<TType>>().construct(this,other);
+        new (this) DynamicArray<TType>(other);
         return *this;
     }
 
@@ -63,7 +63,7 @@ namespace qstd
             return *this;
 
         this->~DynamicArray<TType>();
-        std::allocator<DynamicArray<TType>>().construct(this,std::move(other));
+        new (this) DynamicArray<TType>(std::move(other));
         return *this;
     }
 
