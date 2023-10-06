@@ -1,4 +1,5 @@
 #include "converter.hpp"
+#include "dynamicArray.tpp"
 #include "overload.hpp"
 
 json::innerType FieldToJson(void* addr,const FieldType::type& type)
@@ -46,6 +47,40 @@ json::Object Converter::qstructToJson(void* obj,const QStructType& type)
     return result;
 }
 
+void jsonArrayToQstruct(json::Array& arrayJson,const FieldType::DynamicArray& dynamicArray, void* addr)
+{
+    const auto& valueType = *dynamicArray.innerType;
+    new (addr) qstd::DynamicArray<uint8_t>(arrayJson.values.size(), getSizeOf(valueType) );
+    qstd::DynamicArrayScriptHelper helper { addr, getSizeOf(valueType) };
+    helper.set_length(arrayJson.values.size());
+    int i=0;
+    for( auto& valueIt : arrayJson.values)
+    {
+        auto* elPtr = helper.get_elementPtr(i);
+        std::visit(qstd::overloaded{
+                [&](const FieldType::Unimplemented& type) {
+                },
+                [&](const FieldType::Float& type) {
+                    auto asFloat = std::get<json::Value>(valueIt).get<float>();
+                    *reinterpret_cast<float*>(elPtr) = asFloat;
+                },
+                [&](const FieldType::StdString& type) {
+                    auto asString = std::get<json::Value>(valueIt).get<std::string>();
+                    *reinterpret_cast<std::string*>(elPtr) = asString;
+                },
+                [&](const FieldType::QStruct& type) {
+                    auto& inner_json = std::get<json::Object>(valueIt);
+                    Converter::jsonToQStruct_inner(inner_json,*type.type,elPtr);
+                },
+                [&](const FieldType::DynamicArray& type) {
+                    auto& inner_json = std::get<json::Array>(valueIt);
+                    jsonArrayToQstruct(inner_json,type,elPtr);
+                }
+        },valueType);
+        i++;
+    }
+}
+
 void Converter::jsonToQStruct_inner(json::Object& json,const QStructType& type, void* obj)
 {
     for( auto& entryIt : json.entries )
@@ -68,37 +103,8 @@ void Converter::jsonToQStruct_inner(json::Object& json,const QStructType& type, 
                 },
                 [&](const FieldType::DynamicArray& asDynamicArray)  {
                     void* addr = field.getValuePtr<void>(obj);
-                    const auto& valueType = *asDynamicArray.innerType;
-                    qstd::DynamicArrayScriptHelper helper { addr, getSizeOf(valueType) };
-
                     auto& arrayJson = std::get<json::Array>(entryIt.second);
-                    helper.reserve(arrayJson.values.size());
-                    helper.set_length(arrayJson.values.size());
-                    int i=0;
-                    for( auto& valueIt : arrayJson.values)
-                    {
-                        auto* elPtr = helper.get_elementPtr(i);
-                        std::visit(qstd::overloaded{
-                            [&](const FieldType::Unimplemented& type) {
-                            },
-                            [&](const FieldType::Float& type) {
-                                auto asFloat = std::get<json::Value>(valueIt).get<float>();
-                                *reinterpret_cast<float*>(elPtr) = asFloat;
-                            },
-                            [&](const FieldType::StdString& type) {
-                                auto asString = std::get<json::Value>(valueIt).get<std::string>();
-                                *reinterpret_cast<std::string*>(elPtr) = asString;
-                            },
-                            [&](const FieldType::QStruct& type) {
-                                auto& inner_json = std::get<json::Object>(valueIt);
-                                jsonToQStruct_inner(inner_json,*type.type,elPtr);
-                            },
-                            [&](const FieldType::DynamicArray& type) {
-                                //TODO
-                            }
-                        },valueType);
-                        i++;
-                    }
+                    jsonArrayToQstruct(arrayJson,asDynamicArray,addr);
                 }
         },field.type);
     }

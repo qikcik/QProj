@@ -9,7 +9,7 @@ namespace qstd
     public:
         using element_type = TType;
 
-        explicit DynamicArray(size_t in_capacity = 8);
+        explicit DynamicArray(size_t in_capacity = 8, size_t in_elementSize = sizeof(TType));
         ~DynamicArray();
         DynamicArray(const DynamicArray& other);
         DynamicArray(DynamicArray&& other) noexcept;

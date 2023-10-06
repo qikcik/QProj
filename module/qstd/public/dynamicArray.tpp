@@ -4,10 +4,10 @@
 namespace qstd
 {
     template<typename TType>
-    DynamicArray<TType>::DynamicArray(size_t in_capacity)
+    DynamicArray<TType>::DynamicArray(size_t in_capacity, size_t in_elementSize)
     : capacity(in_capacity), length(0)
     {
-        reserve(capacity);
+        reserve_impl(capacity,in_elementSize);
     }
 
     template<typename TType>
@@ -110,6 +110,9 @@ namespace qstd
     template<typename TType>
     void DynamicArray<TType>::reserve(size_t in_capacity) noexcept
     {
+        if(in_capacity < capacity)
+            return;
+
         reserve_impl(in_capacity,sizeof(TType));
     }
 
@@ -117,9 +120,6 @@ namespace qstd
     template<typename TType>
     void DynamicArray<TType>::reserve_impl(size_t in_capacity, size_t in_elementSize) noexcept
     {
-        if(in_capacity < capacity)
-            return;
-
         element_type* old = array;
         capacity = in_capacity;
         array = reinterpret_cast<TType*>(new uint8_t[capacity * in_elementSize]);
