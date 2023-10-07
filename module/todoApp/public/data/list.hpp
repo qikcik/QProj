@@ -13,7 +13,7 @@ struct List
 };
 
 //TODO: make generate by Header Tool
-const QStructType List::staticType{"List",sizeof(List),{
-        GEN_QSTRUCT_FIELD_ENTRY(List,title),
-        GEN_QSTRUCT_FIELD_ENTRY(List,entries),
-}};
+GEN_QSTRUCT_TYPE(List,{
+    GEN_QSTRUCT_FIELD_ENTRY(List,title),
+    GEN_QSTRUCT_FIELD_ENTRY(List,entries),
+});

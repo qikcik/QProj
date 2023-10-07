@@ -17,8 +17,14 @@ json::innerType FieldToJson(void* addr,const FieldType::type& type)
             return json::Value(value);
         },
         [&](const FieldType::QStruct& asQStruct) -> json::innerType  {
-            auto inner_type = *asQStruct.type;
+            auto& inner_type = *asQStruct.type;
             return Converter::qstructToJson(addr,inner_type);
+        },
+        [&](const FieldType::StdUniquePtr& asUniquePtr) -> json::innerType  {
+            auto& inner_type = *asUniquePtr.innerType; //TODO: handle Dynamic
+            auto uniquePtr = reinterpret_cast<std::unique_ptr<uint8_t>*>(addr);
+            auto innerAddr = reinterpret_cast<void*>(uniquePtr->get());
+            return Converter::qstructToJson(innerAddr,inner_type);
         },
         [&](const FieldType::DynamicArray& asDynamicArray) -> json::innerType  {
             auto& valueType = *asDynamicArray.innerType;
@@ -38,7 +44,7 @@ json::innerType FieldToJson(void* addr,const FieldType::type& type)
 json::Object Converter::qstructToJson(void* obj,const QStructType& type)
 {
     json::Object result {};
-    for(const auto& fieldIt : type.getFields())
+    for(const auto& fieldIt : type.getAllFields())
     {
         auto addr = fieldIt.getValuePtr<void>(obj);
         result.set(fieldIt.name,FieldToJson(addr,fieldIt.type));
@@ -72,6 +78,15 @@ void jsonArrayToQstruct(json::Array& arrayJson,const FieldType::DynamicArray& dy
                     auto& inner_json = std::get<json::Object>(valueIt);
                     Converter::jsonToQStruct_inner(inner_json,*type.type,elPtr);
                 },
+                [&](const FieldType::StdUniquePtr& type) {
+                    auto& inner_type = *type.innerType; //TODO: handle Dynamic
+
+                    //new (addr) std::unique_ptr<void>( reinterpret_cast<void*>(new uint8_t[] ) );
+                    //auto uniquePtr = reinterpret_cast<std::unique_ptr<void>*>(addr);
+
+                    //auto innerAddr = reinterpret_cast<void*>(uniquePtr->get());
+                    //return Converter::qstructToJson(innerAddr,inner_type);
+                },
                 [&](const FieldType::DynamicArray& type) {
                     auto& inner_json = std::get<json::Array>(valueIt);
                     jsonArrayToQstruct(inner_json,type,elPtr);
@@ -100,6 +115,9 @@ void Converter::jsonToQStruct_inner(json::Object& json,const QStructType& type, 
                     auto& inner_json = std::get<json::Object>(entryIt.second);
                     void* value = field.getValuePtr<void>(obj);
                     jsonToQStruct_inner(inner_json,*asQStruct.type,value);
+                },
+                [&](const FieldType::StdUniquePtr& asQStruct)  {
+                    // TODO: impl
                 },
                 [&](const FieldType::DynamicArray& asDynamicArray)  {
                     void* addr = field.getValuePtr<void>(obj);

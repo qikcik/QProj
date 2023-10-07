@@ -1,6 +1,7 @@
 #include "qstructField.hpp"
 #include "qstructType.hpp"
 #include "overload.hpp"
+#include <memory>
 
 template<> FieldType::type getType<float>() { return FieldType::Float{}; }
 template<> FieldType::type getType<std::string>() { return FieldType::StdString{}; }
@@ -22,6 +23,9 @@ size_t getSizeOf(const FieldType::type& ref)
             },
             [&](const FieldType::QStruct& field)  {
                 return field.type->size;
+            },
+            [&](const FieldType::StdUniquePtr& field)  {
+                return sizeof(std::unique_ptr<uint8_t>);
             }
     },ref);
 }

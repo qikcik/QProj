@@ -13,9 +13,14 @@ namespace qstd
     template<typename TType>
     DynamicArray<TType>::~DynamicArray()
     {
-        if(array != nullptr)
+        if(array == nullptr)
+            return;
 
-            delete[] reinterpret_cast<uint8_t*>(array);
+        for(auto& it : *this)
+        {
+            it.~TType();
+        }
+        delete[] reinterpret_cast<uint8_t*>(array);
     }
 
 
@@ -123,7 +128,14 @@ namespace qstd
         element_type* old = array;
         capacity = in_capacity;
         array = reinterpret_cast<TType*>(new uint8_t[capacity * in_elementSize]);
-        std::copy(old, old + length, array); // foreach with move constructor, would be a better option
-        delete[] old;
+
+        for(size_t i = 0; i!= length; i++)
+        {
+            new (&array[i]) TType(std::move(old[i]));
+            old[i].~TType();
+        }
+
+
+        delete[] (uint8_t*)old;
     }
 }

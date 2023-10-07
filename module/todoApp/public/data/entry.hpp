@@ -11,7 +11,7 @@ struct Entry
 };
 
 //TODO: make generate by Header Tool
-const QStructType Entry::staticType{"Entry",sizeof(Entry),{
-        GEN_QSTRUCT_FIELD_ENTRY(Entry,title),
-        GEN_QSTRUCT_FIELD_ENTRY(Entry,status),
-}};
+GEN_QSTRUCT_TYPE(Entry,{
+    GEN_QSTRUCT_FIELD_ENTRY(Entry,title),
+    GEN_QSTRUCT_FIELD_ENTRY(Entry,status),
+});

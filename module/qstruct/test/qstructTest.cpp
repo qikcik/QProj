@@ -6,38 +6,45 @@
 #include "qstructType.hpp"
 #include "qstructField.hpp"
 
-struct Foo
+
+struct FooBase
 {
     float x;
     float y;
     float z;
 
+    static const QStructType staticType;
+};
+
+//TODO: make generate by Header Tool
+const QStructType FooBase::staticType{"FooBase",sizeof(FooBase),{
+        GEN_QSTRUCT_FIELD_ENTRY(FooBase,x),
+        GEN_QSTRUCT_FIELD_ENTRY(FooBase,y),
+        GEN_QSTRUCT_FIELD_ENTRY(FooBase,z),
+}};
+
+struct Foo : public FooBase
+{
     std::string text;
 
     static const QStructType staticType;
 };
 
 //TODO: make generate by Header Tool
-const QStructType Foo::staticType{"Foo",{
-    GEN_QSTRUCT_FIELD_ENTRY(Foo,x),
-    GEN_QSTRUCT_FIELD_ENTRY(Foo,y),
-    GEN_QSTRUCT_FIELD_ENTRY(Foo,z),
+const QStructType Foo::staticType{"Foo",sizeof(Foo),{
     GEN_QSTRUCT_FIELD_ENTRY(Foo,text)
-}};
+},&FooBase::staticType};
 
 struct Bar
 {
     Foo inner {};
-    std::vector<Foo> arr;
-
 
     static const QStructType staticType;
 };
 
 //TODO: make generate by Header Tool
-const QStructType Bar::staticType{"Bar",{
+const QStructType Bar::staticType{"Bar",sizeof(Bar),{
     GEN_QSTRUCT_FIELD_ENTRY(Bar,inner)
-    //(Bar,arr)
 }};
 
 TEST(QStructTest, TypeInfoCheck)
