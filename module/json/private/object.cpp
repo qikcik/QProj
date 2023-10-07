@@ -33,7 +33,7 @@ std::string stringifyArr( const innerType val)
 
                 for(const auto& it : arr.values)
                     result += stringifyArr(it);
-
+                if(arr.values.empty()) result += ",";
                 result[result.size()-1] = ']';
                 result += ",";
             },
@@ -91,11 +91,13 @@ std::string Object::stringify() const
                             result += "[";
                             for(const auto& vecIt : arr.values)
                                 result += stringifyArr(vecIt);
+                            if(arr.values.empty()) result += ",";
                             result[result.size()-1] = ']';
                             result += ",";
                         },
                     },strIt);
 
+                if(arr.values.empty()) result += ",";
                 result[result.size()-1] = ']';
                 result += ",";
             },

@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "TextWidget.hpp"
 #include "ContainerWidget.hpp"
+#include <iostream>
 
 using namespace qui;
 
@@ -57,6 +58,6 @@ int main()
         window.display();
 
         delta = deltaClock.restart().asSeconds();
-        //std::cout << std::to_string(1/delta) << std::endl;
+        std::cout << std::to_string(1/delta) << std::endl;
     }
 }

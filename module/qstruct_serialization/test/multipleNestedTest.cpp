@@ -16,8 +16,7 @@ struct Foo2
 
 //TODO: make generate by Header Tool
 const QStructType Foo2::staticType{"Foo",sizeof(Foo2),{
-        GEN_QSTRUCT_FIELD_ENTRY(Foo2,nums),
-
+    GEN_QSTRUCT_FIELD_ENTRY(Foo2,nums),
 }};
 
 struct Bar2
@@ -52,5 +51,4 @@ TEST(ConverterTest2, Test)
     {
         EXPECT_EQ(bar.arr[0][0].nums[i], i*2);
     }
-
 }

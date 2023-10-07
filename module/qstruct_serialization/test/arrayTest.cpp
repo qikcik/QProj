@@ -26,9 +26,9 @@ const QStructType FooArr::staticType{"Foo",sizeof(FooArr),{
 TEST(ConverterTest, ArrayCheck)
 {
     FooArr obj {};
-    obj.arr.push_back(2);
-    obj.arr.push_back(3);
-    obj.arr.push_back(6);
+    //obj.arr.push_back(2);
+    //obj.arr.push_back(3);
+    //obj.arr.push_back(6);
 
     auto json = Converter::qstructToJson(obj);
     auto source = json.stringify();
