@@ -5,23 +5,23 @@
 
 #include "dependency/raygui.h"
 
-struct Label : public Widget
+struct Button : public Widget
 {
     using base_class = Widget;
     static const QStructType staticType;
 
-    Label() { qStructType = &staticType; }
-    ~Label() override = default;
+    Button() { qStructType = &staticType; }
+    ~Button() override = default;
 
     std::string text {};
 
     void onDraw() override
     {
-        GuiLabel( (Rectangle){ x, y, width, height }, text.c_str());
+        GuiButton( (Rectangle){ x, y, width, height }, text.c_str());
     };
 };
 
 //TODO: make generate by Header Tool
-GEN_QSTRUCT_TYPE(Label,{
-    GEN_QSTRUCT_FIELD_ENTRY(Label,text)
+GEN_QSTRUCT_TYPE(Button,{
+    GEN_QSTRUCT_FIELD_ENTRY(Button,text)
 });

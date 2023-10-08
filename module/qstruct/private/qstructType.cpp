@@ -48,5 +48,5 @@ const std::vector<FieldInfo> QStructType::getAllFields() const
     for(auto& it : fields)
         result.push_back(it);
 
-    return fields;
+    return result;
 }

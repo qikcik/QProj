@@ -13,6 +13,7 @@ struct Widget
     float width {};
     float height {};
 
+    virtual void onDraw() {};
 };
 
 //TODO: make generate by Header Tool

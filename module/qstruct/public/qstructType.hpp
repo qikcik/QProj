@@ -8,6 +8,7 @@
 class FieldInfo;
 
 
+
 class QStructType
 {
 public:
@@ -33,6 +34,13 @@ public:
 
     const std::function<void(void*)> initInstance;
     const std::function<void(void*)> deInitInstance;
+
+    const QStructType* getDynamicType(void* addr) const
+    {
+        auto* bytePtr = reinterpret_cast<uint8_t*>(addr);
+        auto memberPtr = *reinterpret_cast<QStructType**>(bytePtr + dynamicTypeOffset);
+        return memberPtr;
+    }
 
     const FieldInfo& getField(const std::string& fieldName) const;
     const std::vector<FieldInfo> getAllFields() const;
@@ -115,6 +123,22 @@ size_t getQStructDynamicTypeOffset() {
     return offsetof(T,qStructType);
 }
 
+template<typename T>
+concept TStdUniquePtr = requires(T a) {
+    requires std::same_as<T, std::unique_ptr<typename T::element_type>>;
+};
+
+//TODO: implement
+
+template<TStdUniquePtr T>
+FieldType::type getType() {
+    using value_type = typename T::element_type;
+    return FieldType::StdUniquePtr{
+            &T::element_type::staticType
+    };
+}
+
+
 #include "dynamicArray.hpp"
 
 template<typename T>
@@ -134,17 +158,18 @@ FieldType::type getType() {
     };
 }
 
-template<typename T>
-concept TStdUniquePtr = requires(T a) {
-    requires std::same_as<T, std::unique_ptr<typename T::element_type>>;
+class QDynamicInfo
+{
+public:
+    void registerDynamicType(const QStructType* inQStructTypes)
+    {
+        QStructTypes[inQStructTypes->name] = inQStructTypes;
+    }
+    const QStructType* getDynamicType(const std::string& inTypeName) const
+    {
+        return QStructTypes[inTypeName];
+    }
+
+protected:
+    mutable std::unordered_map<std::string,const QStructType*> QStructTypes;
 };
-
-//TODO: implement
-
-template<TStdUniquePtr T>
-FieldType::type getType() {
-    using value_type = typename T::element_type;
-    return FieldType::StdUniquePtr{
-        &T::element_type::staticType
-    };
-}

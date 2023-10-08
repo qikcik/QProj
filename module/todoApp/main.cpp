@@ -12,7 +12,7 @@
 
 int main()
 {
-
+    QDynamicInfo dynamicInfo;
     int screenWidth = 400;
     int screenHeight = 600;
 
@@ -47,14 +47,14 @@ int main()
                 std::ifstream file(std::string(fileName) + ".json");
                 std::stringstream stream {};
                 stream << file.rdbuf();
-                list = Converter::jsonToQStruct<List>(stream.str());
+                list = Converter(dynamicInfo).jsonToQStruct<List>(stream.str());
             }
             if (GuiButton((Rectangle){ 320, 10, 70, 30 },  "Save"))
             {
                 std::ofstream file {};
                 file.open ( std::string(fileName) + ".json");
-                file << Converter::qstructToJson(list).stringify();
-                std::cout << Converter::qstructToJson(list).stringify();
+                file << Converter(dynamicInfo).qstructToJson(list).stringify();
+                std::cout << Converter(dynamicInfo).qstructToJson(list).stringify();
             }
 
             float temp = 50;
