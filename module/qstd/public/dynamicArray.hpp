@@ -21,6 +21,7 @@ namespace qstd
         void reserve(size_t in_capacity) noexcept;
 
         void push_back(element_type&& in_element) noexcept;
+        void clear() noexcept;
 
         element_type& operator[](size_t in_position);
         const element_type& operator[](size_t in_position) const;

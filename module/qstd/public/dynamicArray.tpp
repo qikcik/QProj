@@ -121,6 +121,13 @@ namespace qstd
         reserve_impl(in_capacity,sizeof(TType));
     }
 
+    template<typename TType>
+    void DynamicArray<TType>::clear() noexcept
+    {
+        this->~DynamicArray();
+        new (this) DynamicArray();
+    }
+
 
     template<typename TType>
     void DynamicArray<TType>::reserve_impl(size_t in_capacity, size_t in_elementSize) noexcept

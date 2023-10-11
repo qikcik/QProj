@@ -32,12 +32,12 @@ int main()
     container.get()->width = 0;
     container.get()->height = 0;
 
-//
-//    std::ifstream file("layout.json");
-//    std::stringstream stream {};
-//    stream << file.rdbuf();
-//    Converter(dynamicInfo).jsonToQStruct(*container.get(),stream.str());
-//    auto tmp = container.get();
+
+    std::ifstream file("layout.json");
+    std::stringstream stream {};
+    stream << file.rdbuf();
+    Converter(dynamicInfo).jsonToQStruct(*container.get(),stream.str());
+    auto tmp = container.get();
 
     std::function<void(const QStructType*, WeakPtr<Widget>)> openNextView = [&](const QStructType* type , WeakPtr<Widget> obj){
         OwnerPtr<PropertyViewer>  viewer(new PropertyViewer());
@@ -49,7 +49,7 @@ int main()
         panel.get()->widgets.push_back(std::move(viewer));
         panel.get()->width = 400;
         panel.get()->height = 400;
-        container.get()->widgets.push_back(std::move(panel));
+        container.get()->widgetsToAdd.push_back(std::move(panel));
     };
 
     OwnerPtr<Panel> panel(new Panel);
