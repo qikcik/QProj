@@ -14,14 +14,16 @@ struct Label : public Widget
     ~Label() override = default;
 
     std::string text {};
+    std::string text2 {};
 
-    void onDraw() override
+    void onDraw(const Vector2& offset) override
     {
-        GuiLabel( (Rectangle){ x, y, width, height }, text.c_str());
+        GuiLabel( (Rectangle){ x + offset.x, y + offset.y, width, height }, text.c_str());
     };
 };
 
 //TODO: make generate by Header Tool
 GEN_QSTRUCT_TYPE(Label,{
-    GEN_QSTRUCT_FIELD_ENTRY(Label,text)
+    GEN_QSTRUCT_FIELD_ENTRY(Label,text),
+    GEN_QSTRUCT_FIELD_ENTRY(Label,text2)
 });

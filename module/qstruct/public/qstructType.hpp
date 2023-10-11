@@ -4,7 +4,7 @@
 #include <string>
 #include "qstructField.hpp"
 #include <functional>
-
+#include "ownerPtr.hpp"
 class FieldInfo;
 
 
@@ -124,20 +124,35 @@ size_t getQStructDynamicTypeOffset() {
 }
 
 template<typename T>
-concept TStdUniquePtr = requires(T a) {
-    requires std::same_as<T, std::unique_ptr<typename T::element_type>>;
+concept TOwnerPtr = requires(T a) {
+    requires std::same_as<T, OwnerPtr<typename T::element_type>>;
 };
 
 //TODO: implement
 
-template<TStdUniquePtr T>
+template<TOwnerPtr T>
 FieldType::type getType() {
     using value_type = typename T::element_type;
-    return FieldType::StdUniquePtr{
+    return FieldType::OwnerPtr{
             &T::element_type::staticType
     };
 }
 
+
+template<typename T>
+concept TWeakPtr = requires(T a) {
+    requires std::same_as<T, WeakPtr<typename T::weakElement_type>>;
+};
+
+//TODO: implement
+
+template<TWeakPtr T>
+FieldType::type getType() {
+    using value_type = typename T::weakElement_type;
+    return FieldType::WeakPtr{
+            &T::weakElement_type::staticType
+    };
+}
 
 #include "dynamicArray.hpp"
 

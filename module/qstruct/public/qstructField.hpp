@@ -14,9 +14,11 @@ namespace FieldType
     struct StdString;
     struct QStruct;
     struct DynamicArray;
-    struct StdUniquePtr;
+    struct OwnerPtr;
+    struct WeakPtr;
+    struct QStructTypePtr;
 
-    using type = std::variant<Unimplemented,Float,StdString,QStruct,DynamicArray,StdUniquePtr>;
+    using type = std::variant<Unimplemented,Float,StdString,QStruct,DynamicArray,OwnerPtr,WeakPtr,QStructTypePtr>;
 
     struct Unimplemented {
 
@@ -30,10 +32,16 @@ namespace FieldType
     struct QStruct {
         const QStructType* type;
     };
+    struct QStructTypePtr {
+
+    };
     struct DynamicArray {
         std::shared_ptr<FieldType::type> innerType; //TODO: fix copy behaviour and change to unique_ptr
     };
-    struct StdUniquePtr {
+    struct OwnerPtr {
+        const QStructType* innerType; //TODO: fix copy behaviour and change to unique_ptr
+    };
+    struct WeakPtr {
         const QStructType* innerType; //TODO: fix copy behaviour and change to unique_ptr
     };
 }

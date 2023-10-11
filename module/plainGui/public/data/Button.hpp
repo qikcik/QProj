@@ -15,9 +15,9 @@ struct Button : public Widget
 
     std::string text {};
 
-    void onDraw() override
+    void onDraw(const Vector2& offset) override
     {
-        GuiButton( (Rectangle){ x, y, width, height }, text.c_str());
+        GuiButton( (Rectangle){ x + offset.x, y + offset.y, width, height }, text.c_str());
     };
 };
 

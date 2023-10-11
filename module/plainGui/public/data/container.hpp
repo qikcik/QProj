@@ -14,12 +14,13 @@ struct Container : public Widget
 
     ~Container() override = default;
 
-    qstd::DynamicArray<std::unique_ptr<Widget>> widgets {};
+    qstd::DynamicArray<OwnerPtr<Widget>> widgets {};
 
-    void onDraw() override
+    void onDraw(const Vector2& offset) override
     {
         for(auto& it : widgets)
-            it->onDraw();
+            if(it.get())
+                it.get()->onDraw(offset);
     };
 };
 

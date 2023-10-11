@@ -24,8 +24,14 @@ size_t getSizeOf(const FieldType::type& ref)
             [&](const FieldType::QStruct& field)  {
                 return field.type->size;
             },
-            [&](const FieldType::StdUniquePtr& field)  {
-                return sizeof(std::unique_ptr<uint8_t>);
+            [&](const FieldType::QStructTypePtr& field)  {
+                return sizeof(void*);
+            },
+            [&](const FieldType::OwnerPtr& field)  {
+                return sizeof(OwnerPtr<void>);
+            },
+            [&](const FieldType::WeakPtr& field)  {
+                return sizeof(WeakPtr<void>);
             }
     },ref);
 }

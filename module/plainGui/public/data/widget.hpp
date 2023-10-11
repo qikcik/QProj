@@ -1,6 +1,7 @@
 #pragma once
 #include "dynamicArray.hpp"
 #include "qstructType.hpp"
+#include "raylib.h"
 
 struct Widget
 {
@@ -13,7 +14,7 @@ struct Widget
     float width {};
     float height {};
 
-    virtual void onDraw() {};
+    virtual void onDraw(const Vector2& offset) {};
 };
 
 //TODO: make generate by Header Tool

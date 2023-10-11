@@ -16,7 +16,7 @@ public:
     json::Object qstructToJson(void* obj,const QStructType& type);
 
     template<QStruct TStruct>
-    void jsonToQStruct(void* obj,const std::string& source);
+    void jsonToQStruct(TStruct& obj,const std::string& source);
     void jsonToQStruct_inner(json::Object& json,const QStructType& type, void* obj);
 
 
@@ -38,14 +38,17 @@ json::Object Converter::qstructToJson(TStruct& obj)
 
 
 template<QStruct TStruct>
-void Converter::jsonToQStruct(void* obj,const std::string& source)
+void Converter::jsonToQStruct(TStruct& obj,const std::string& source)
 {
     QStructType type = TStruct::staticType;
+    type.deInitInstance(&obj);
+    type.initInstance(&obj);
+
 
     json::Parser parser {};
     auto ParserRes = parser.parse(source);
     if (auto* json = std::get_if<json::Object>(&ParserRes); json )
     {
-        jsonToQStruct_inner(*json,type,obj);
+        jsonToQStruct_inner(*json,type,&obj);
     }
 }
