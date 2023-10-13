@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include <iostream>
 
 #define RAYGUI_IMPLEMENTATION
 #include "dependency/raygui.h"
@@ -38,33 +39,21 @@ int main()
     stream << file.rdbuf();
     Converter(dynamicInfo).jsonToQStruct(*container.get(),stream.str());
     auto tmp = container.get();
-
-    std::function<void(const QStructType*, WeakPtr<Widget>)> openNextView = [&](const QStructType* type , WeakPtr<Widget> obj){
-        OwnerPtr<PropertyViewer>  viewer(new PropertyViewer());
-        viewer.get()->typeToShow = type;
-        viewer.get()->objectToShowWeak = obj;
-        viewer.get()->openNextView = openNextView;
-
-        OwnerPtr<Panel> panel(new Panel);
-        panel.get()->widgets.push_back(std::move(viewer));
-        panel.get()->width = 400;
-        panel.get()->height = 400;
-        container.get()->widgetsToAdd.push_back(std::move(panel));
-    };
+    std::cout << to_string(container.block->uuid);
 
     OwnerPtr<Panel> panel(new Panel);
-
-    OwnerPtr<PropertyViewer>  viewer(new PropertyViewer());
-    viewer.get()->typeToShow = &Container::staticType;
-    viewer.get()->objectToShowWeak = container;
-    viewer.get()->openNextView = openNextView;
-
-    panel.get()->widgets.push_back(std::move(viewer));
-    panel.get()->width = 600;
-    panel.get()->height = 600;
-    container.get()->widgets.push_back(std::move(panel));
-
-
+//
+//    OwnerPtr<PropertyViewer>  viewer(new PropertyViewer());
+//    viewer.get()->typeToShow = &Container::staticType;
+//    viewer.get()->objectToShowWeak = container;
+//    viewer.get()->container = container;
+//
+//    panel.get()->widgets.push_back(std::move(viewer));
+//    panel.get()->width = 600;
+//    panel.get()->height = 600;
+//    container.get()->widgets.push_back(std::move(panel));
+//
+//
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1280, 720, "ToDoAppSimple");
@@ -90,7 +79,7 @@ int main()
 
 
     std::ofstream file2 {};
-    file2.open ( "layout.json");
+    file2.open ( "layout2.json");
     file2 << Converter(dynamicInfo).qstructToJson(*container.get()).stringify();
 
     return 0;

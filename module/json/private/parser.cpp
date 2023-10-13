@@ -13,6 +13,10 @@ Object parseObject(TokenIterator& it);
 Array parseArray(TokenIterator& it)
 {
     Array result;
+    it.next();
+    if (auto* asKeyword = std::get_if<Token::Keyword>(&it.current()); asKeyword && asKeyword->value == ']')
+        return result;
+
 
     while(!std::holds_alternative<Token::End>(it.current()))
     {
@@ -37,11 +41,14 @@ Array parseArray(TokenIterator& it)
                 [&](const Token::End& end) {
                     throw std::runtime_error("unexpected end of file, expected value for entry");
                 },
-        }, it.next());
+        }, it.current());
 
         it.next();
         if (auto* asKeyword = std::get_if<Token::Keyword>(&it.current()); asKeyword && asKeyword->value == ',')
+        {
+            it.next();
             continue;
+        }
         if (auto* asKeyword = std::get_if<Token::Keyword>(&it.current()); asKeyword && asKeyword->value == ']')
             return result;
         else

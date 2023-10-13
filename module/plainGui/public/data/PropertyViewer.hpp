@@ -5,12 +5,13 @@
 
 #include "dependency/raygui.h"
 #include "overload.hpp"
+#include "Panel.hpp"
 
-struct PropertyViewer : public Widget
+#define QCLASS_DEF(name) class name : public Widget
+
+
+QCLASS_DEF(PropertyViewer)
 {
-    using base_class = Widget;
-    static const QStructType staticType;
-
     PropertyViewer() { qStructType = &staticType; }
     ~PropertyViewer() override = default;
 
@@ -18,7 +19,7 @@ struct PropertyViewer : public Widget
     //void* objectToShow {nullptr};
     const QStructType* typeToShow {nullptr};
 
-    std::function<void(const QStructType*, WeakPtr<Widget>)> openNextView;
+    WeakPtr<Container> container {};
 
     void onDraw(const Vector2& offset) override
     {
@@ -80,7 +81,16 @@ struct PropertyViewer : public Widget
 
                         if(GuiButton( (Rectangle){ offset.x+25, offsetY+20, 50, 20 }, "element"))
                         {
-                            openNextView(real_type, WeakPtr<Widget>(*ownerPtr));
+                            OwnerPtr<PropertyViewer>  viewer(new PropertyViewer());
+                            viewer.get()->typeToShow = real_type;
+                            viewer.get()->objectToShowWeak = WeakPtr<Widget>(*ownerPtr);
+
+                            OwnerPtr<Panel> panel(new Panel);
+                            panel.get()->widgets.push_back(std::move(viewer));
+                            panel.get()->width = 400;
+                            panel.get()->height = 400;
+
+                            container.get()->widgetsToAdd.push_back(std::move(panel));
                         }
                     },
                     [&](const FieldType::WeakPtr& asWeakPtr)  {
@@ -98,7 +108,16 @@ struct PropertyViewer : public Widget
 
                         if(GuiButton( (Rectangle){ offset.x+25, offsetY+20, 50, 20 }, "weak element"))
                         {
-                            openNextView(real_type, *reinterpret_cast<WeakPtr<Widget>*>(weakPtr));
+                            OwnerPtr<PropertyViewer>  viewer(new PropertyViewer());
+                            viewer.get()->typeToShow = real_type;
+                            viewer.get()->objectToShowWeak = *reinterpret_cast<WeakPtr<Widget>*>(weakPtr);
+
+                            OwnerPtr<Panel> panel(new Panel);
+                            panel.get()->widgets.push_back(std::move(viewer));
+                            panel.get()->width = 400;
+                            panel.get()->height = 400;
+
+                            container.get()->widgetsToAdd.push_back(std::move(panel));
                         }
                     },
                     [&](const FieldType::DynamicArray& asDynamicArray)
@@ -127,7 +146,17 @@ struct PropertyViewer : public Widget
 
                                 if(GuiButton( (Rectangle){ offset.x+75, offsetY, 200, 20 }, "element"))
                                 {
-                                    openNextView(inner_type, WeakPtr<Widget>(*ownerPtr));
+                                    OwnerPtr<PropertyViewer>  viewer(new PropertyViewer());
+                                    viewer.get()->typeToShow = inner_type;
+                                    viewer.get()->objectToShowWeak = WeakPtr<Widget>(*ownerPtr);
+                                    viewer.get()->container = container;
+
+                                    OwnerPtr<Panel> panel(new Panel);
+                                    panel.get()->widgets.push_back(std::move(viewer));
+                                    panel.get()->width = 400;
+                                    panel.get()->height = 400;
+
+                                    container.get()->widgetsToAdd.push_back(std::move(panel));
                                 }
                             }
                             else
@@ -146,5 +175,6 @@ struct PropertyViewer : public Widget
 //TODO: make generate by Header Tool
 GEN_QSTRUCT_TYPE(PropertyViewer,{
     GEN_QSTRUCT_FIELD_ENTRY(PropertyViewer,objectToShowWeak),
-    GEN_QSTRUCT_FIELD_ENTRY(PropertyViewer,typeToShow)
+    GEN_QSTRUCT_FIELD_ENTRY(PropertyViewer,typeToShow),
+    GEN_QSTRUCT_FIELD_ENTRY(PropertyViewer,container)
 });

@@ -7,6 +7,7 @@ set ( CMAKE_CXX_FLAGS "-Wno-invalid-offsetof")
 
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/module.cmake")
 
+add_subdirectory("module/headerTool")
 add_subdirectory("module/qstd")
 add_subdirectory("module/json")
 add_subdirectory("module/qstruct")
